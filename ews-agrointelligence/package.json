@@ -1,0 +1,44 @@
+{
+  "name": "ews-agrointelligence",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
+    "api": "node --env-file-if-exists=.env apps/api/src/server.ts",
+    "worker": "node --env-file-if-exists=.env apps/worker/index.ts",
+    "edge": "node --env-file-if-exists=.env apps/edge-gateway/index.ts",
+    "db:migrate": "node --env-file-if-exists=.env packages/database/migrate.ts",
+    "db:seed": "node --env-file-if-exists=.env scripts/seed.ts",
+    "bootstrap": "node --env-file-if-exists=.env scripts/bootstrap.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:e2e": "node tests/browser.mjs",
+    "test:load": "node tests/load.mjs",
+    "build": "pnpm --filter @ews/web build",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit && pnpm --filter @ews/web typecheck",
+    "test:e2e:v2": "node tests/browser-v2.mjs",
+    "test:e2e:2.1": "node tests/browser-v21.mjs",
+    "test:postgres": "node --test tests/postgres.test.ts"
+  },
+  "dependencies": {
+    "fastify": "5.12.7",
+    "jszip": "3.10.1",
+    "nodemailer": "10.1.7",
+    "pdf-lib": "1.17.1",
+    "pg": "8.16.3",
+    "xml-js": "1.6.11",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.19.19",
+    "@types/nodemailer": "7.0.3",
+    "@types/pg": "8.15.5",
+    "playwright": "1.56.1",
+    "typescript": "5.9.3"
+  }
+}

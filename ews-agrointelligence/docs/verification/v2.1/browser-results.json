@@ -1,0 +1,399 @@
+{
+  "browser": "153.0.8010.0",
+  "screenshots": 76,
+  "checks": [
+    {
+      "page": "landing",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "login",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "landing",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "login",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "landing",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "login",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "landing",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "login",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "landing",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "login",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "overview",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "monitor",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "predict",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "energy",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "performance",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "team-operations",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "integrations",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "report-schedules",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "settings",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "production",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "work_orders",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "overview",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "monitor",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "predict",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "energy",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "performance",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "team-operations",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "integrations",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "report-schedules",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "settings",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "production",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "work_orders",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "overview",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "monitor",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "predict",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "energy",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "performance",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "team-operations",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "integrations",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "report-schedules",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "settings",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "production",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "work_orders",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "overview",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "monitor",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "predict",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "energy",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "performance",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "team-operations",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "integrations",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "report-schedules",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "settings",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "production",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "work_orders",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "overview",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "monitor",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "predict",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "energy",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "performance",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "team-operations",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "integrations",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "report-schedules",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "settings",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "production",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "work_orders",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "staff",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "staff",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "staff",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "staff",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "staff",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "admin",
+      "width": 360,
+      "overflow": false
+    },
+    {
+      "page": "admin",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "admin",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "admin",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "page": "admin",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "worker-health",
+      "width": 390,
+      "overflow": false
+    }
+  ],
+  "flows": [
+    "MFA EWS",
+    "owner demo",
+    "operator login",
+    "production retry",
+    "incident",
+    "operator denied finance",
+    "modal Escape",
+    "mobile drawer Escape",
+    "worker health",
+    "PDF"
+  ],
+  "errors": []
+}

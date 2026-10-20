@@ -1,0 +1,20 @@
+{
+  "driver": "SQLite local only",
+  "integrity_check": "ok",
+  "counts_match": true,
+  "source_counts": {
+    "tenants": 1,
+    "users": 1,
+    "equipment": 18,
+    "measurements": 5742,
+    "production": 90
+  },
+  "restored_counts": {
+    "tenants": 1,
+    "users": 1,
+    "equipment": 18,
+    "measurements": 5742,
+    "production": 90
+  },
+  "postgres_restore": "not executed; PostgreSQL unavailable"
+}

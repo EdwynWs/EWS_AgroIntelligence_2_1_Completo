@@ -1,0 +1,1 @@
+TypeScript API/pacotes/scripts/testes: exit 0, sem diagnósticos.

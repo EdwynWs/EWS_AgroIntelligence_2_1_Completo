@@ -1,0 +1,2 @@
+$ node node_modules/typescript/bin/tsc --noEmit && pnpm --filter @ews/web typecheck
+$ node node_modules/typescript/bin/tsc --noEmit

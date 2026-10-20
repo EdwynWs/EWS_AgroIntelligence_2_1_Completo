@@ -1,0 +1,17 @@
+ALTER TABLE maintenance_plans ADD COLUMN basis TEXT NOT NULL DEFAULT 'hours' CHECK(basis IN ('hours','cycles','calendar'));
+ALTER TABLE maintenance_plans ADD COLUMN every_cycles INTEGER CHECK(every_cycles>0);
+ALTER TABLE maintenance_plans ADD COLUMN next_cycles INTEGER CHECK(next_cycles>=0);
+ALTER TABLE maintenance_plans ADD COLUMN every_days INTEGER CHECK(every_days>0);
+ALTER TABLE maintenance_plans ADD COLUMN next_on TEXT;
+CREATE TABLE inspections (id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL REFERENCES tenants(id), equipment_id TEXT NOT NULL, day TEXT NOT NULL, name TEXT NOT NULL, result TEXT NOT NULL CHECK(result IN ('ok','attention','fault')), checklist TEXT NOT NULL DEFAULT '[]', notes TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, UNIQUE(tenant_id,id), FOREIGN KEY(tenant_id,equipment_id) REFERENCES equipment(tenant_id,id));
+CREATE TABLE worker_health (id TEXT PRIMARY KEY, last_success_at TEXT NOT NULL, duration_ms INTEGER NOT NULL);
+CREATE TABLE recurring_charges (id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL REFERENCES tenants(id), description TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents>0), due_day INTEGER NOT NULL CHECK(due_day BETWEEN 1 AND 28), next_on TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)), created_at TEXT NOT NULL);
+CREATE TABLE recurring_charge_runs (schedule_id TEXT NOT NULL REFERENCES recurring_charges(id), tenant_id TEXT NOT NULL, slot TEXT NOT NULL, charge_id TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(schedule_id,slot), FOREIGN KEY(tenant_id,charge_id) REFERENCES charges(tenant_id,id));
+CREATE TABLE staff_requests (id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, user_id TEXT NOT NULL, request_key TEXT NOT NULL, payload_hash TEXT NOT NULL, response TEXT NOT NULL, created_at TEXT NOT NULL, UNIQUE(user_id,request_key), FOREIGN KEY(tenant_id,user_id) REFERENCES users(tenant_id,id));
+CREATE INDEX idx_inspections_equipment ON inspections(tenant_id,equipment_id,day);
+CREATE INDEX idx_work_orders_status_due ON work_orders(tenant_id,status,due_on);
+CREATE INDEX idx_work_orders_completed ON work_orders(tenant_id,completed_at);
+CREATE INDEX idx_outbox_due ON outbox(status,next_attempt_at);
+CREATE INDEX idx_recurring_due ON recurring_charges(active,next_on);
+CREATE INDEX idx_staff_requests_retention ON staff_requests(created_at);
+CREATE UNIQUE INDEX idx_recurring_active_tenant ON recurring_charges(tenant_id) WHERE active=1;

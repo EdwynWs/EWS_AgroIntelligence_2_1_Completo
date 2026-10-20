@@ -1,0 +1,1 @@
+TypeScript frontend: exit 0, sem diagnósticos.

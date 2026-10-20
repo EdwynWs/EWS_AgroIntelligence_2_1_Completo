@@ -1,0 +1,44 @@
+✔ migration is repeatable (496.196735ms)
+✔ password hashing and wrong password (386.345904ms)
+✔ RFC 6238 SHA1 vector, encryption and replay protection (1.870309ms)
+✔ authentication and invalid credentials (88.490349ms)
+✔ CSRF and foreign origin rejected (0.912101ms)
+✔ viewer cannot modify resources (0.888356ms)
+✔ tenant IDs cannot be overridden by client headers (0.419056ms)
+✔ tenant isolation in reads, updates and foreign keys (3.223739ms)
+✔ CRUD persistence, filtering, sorting and audit (2.359798ms)
+✔ create normalized operational graph (4.881396ms)
+✔ ingestion deduplicates retries and rejects sequence collisions (2.793517ms)
+✔ ingestion is atomic for mixed valid and invalid rows (0.812635ms)
+✔ units, sources, timestamp and range validation (1.57175ms)
+✔ rule triggers once, hysteresis rearms after reset (5.057114ms)
+✔ minimum duration, silence and gap reset decisions (0.255826ms)
+✔ stale data never reports operational (0.195027ms)
+✔ gateway token rotation revokes old identity (1.260033ms)
+✔ work order state machine requires assignee, checklist and report (3.963166ms)
+✔ tariff overlaps rejected and money calculation uses cents (1.223118ms)
+✔ energy and production KPI requires matching scope (22.9465ms)
+✔ global and barn energy measurements cannot double count (1.554264ms)
+✔ CSV import validates atomically and protects CSV formulas (3.599722ms)
+✔ verified gains require documented evidence and baseline (0.921575ms)
+✔ backend plan gating and suspension (0.914574ms)
+✔ reports and exports are authenticated and tenant scoped (7.027831ms)
+✔ public leads persist and are not accessible to tenants (1.529768ms)
+✔ buffer persists, retries and removes only acknowledged batches (19.386257ms)
+✔ demo reset cannot affect real tenants (24.166654ms)
+✔ session revocation on logout (0.72139ms)
+✔ XLSX first sheet import, serial dates and formula rejection (21.72127ms)
+✔ binary PDF export produces valid pages (53.605208ms)
+✔ attachments validate content and tenant ownership (213.076291ms)
+✔ availability and MTBF only with complete daily coverage (2.991457ms)
+✔ billing webhook HMAC, stale timestamps, idempotency and payload conflict (1.747349ms)
+✔ platform commercial data excludes demo and permits subscription administration (161.004933ms)
+✔ tenant CLI excludes credentials, requires exact confirmation and preserves other companies (881.793527ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1866.390017

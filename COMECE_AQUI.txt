@@ -1,0 +1,30 @@
+EWS AgroIntelligence 2.1 — CÓDIGO COMPLETO
+
+Este ZIP já inclui a versão original e todas as correções 2.1.
+Não depende do ZIP de correções nem de outra pasta.
+
+INSTALAÇÃO NOVA PARA DEMONSTRAÇÃO
+1. Extraia o ZIP em uma pasta nova, sem apagar a instalação anterior.
+2. No VS Code, abra a subpasta ews-agrointelligence, que contém package.json.
+3. Abra o terminal nessa subpasta e execute UM comando por vez:
+
+npm install -g pnpm@11.25.0
+pnpm install --frozen-lockfile
+Copy-Item .env.example .env
+pnpm db:migrate
+pnpm db:seed
+pnpm dev
+
+Pare ao primeiro erro. Requer Node.js 24.
+Abra http://localhost:3000/login e clique em Explorar demonstração.
+
+Se já possui dados reais: preserve .env e banco, faça backup e siga
+o guia docs/INSTALACAO_2_1.md,
+seção Atualizar instalação existente. Não execute seed em base real.
+
+O projeto inclui packages/database/db.ts e scripts/dev.mjs.
+Não inclui node_modules: pnpm install instala as dependências.
+
+A pasta .github fica na raiz do repositório, ao lado de ews-agrointelligence.
+Ao publicar, preserve essa estrutura. Não envie .env, bancos ou node_modules.
+Nenhum deploy realizado. Pendências de homologação em docs/ENTREGA_2_1.md.

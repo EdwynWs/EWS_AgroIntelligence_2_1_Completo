@@ -1,0 +1,46 @@
+// Isolated local servers and database. Does not use or reset an existing installation.
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {mkdtempSync,mkdirSync,writeFileSync,createWriteStream} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {randomBytes,randomUUID} from 'node:crypto';
+import {connect,insert,one} from '../packages/database/db.ts';
+import {migrate} from '../packages/database/migrate.ts';
+import {seedDemo} from '../scripts/seed.ts';
+import {passwordHash,encryptSecret,base32,totp} from '../apps/api/src/security.ts';
+const dir=mkdtempSync(join(tmpdir(),'agro-browser-')),output='test-results/v2.1';mkdirSync(output,{recursive:true});
+const origin='http://localhost:3000';
+const env={...process.env,NODE_ENV:'test',DB_DRIVER:'sqlite',SQLITE_PATH:join(dir,'browser.sqlite'),APP_ORIGIN:origin,HOST:'127.0.0.1',PORT:'4000',ENABLE_DEMO:'true',SMTP_HOST:'',ENABLE_BILLING_WEBHOOK:'false',IMPORT_ALLOWED_HOSTS:'',MFA_ENCRYPTION_KEY:randomBytes(32).toString('hex'),NEXT_TELEMETRY_DISABLED:'1'};
+process.env.MFA_ENCRYPTION_KEY=env.MFA_ENCRYPTION_KEY;
+const db=await connect({driver:'sqlite',path:env.SQLITE_PATH});await migrate(db);await seedDemo(db);
+const password=randomBytes(20).toString('hex'),secret=base32(randomBytes(20)),adminId=randomUUID();
+await insert(db,'users',{id:adminId,tenant_id:null,name:'QA EWS',email:'qa-ews@example.invalid',password_hash:passwordHash(password),role:'EWS',active:1,mfa_secret:encryptSecret(secret),mfa_enabled:1,mfa_last_step:-1,created_at:new Date().toISOString()});
+const children=[];let browser;const errors=[],screens=[];
+function start(name,args){const log=createWriteStream(output+'/'+name+'.log');const p=spawn(process.execPath,args,{env,stdio:['ignore','pipe','pipe']});p.stdout.pipe(log);p.stderr.pipe(log);children.push(p);return p;}
+async function ready(url){for(let n=0;n<120;n++){try{if((await fetch(url)).ok)return;}catch{}await new Promise(r=>setTimeout(r,500));}throw new Error('Server not ready: '+url);}
+async function check(page,label,width){await page.locator('main').first().waitFor();await page.waitForTimeout(350);await page.locator('.loading').waitFor({state:'hidden'});assert.equal(await page.locator('.error-box').count(),0,label+' displayed an error: '+await page.locator('.error-box').allTextContents());const overflow=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,items:[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.right>innerWidth+2||r.left< -2||e.scrollWidth>e.clientWidth+2)&&!e.closest('.sidebar,.table-scroll,.tabs');}).slice(0,16).map(e=>({tag:e.tagName,class:e.className,scroll:e.scrollWidth,client:e.clientWidth}))}));const tabs=await page.locator('.tabs button').evaluateAll(nodes=>nodes.map(n=>({width:n.clientWidth,content:n.scrollWidth})));assert.ok(tabs.every(t=>t.content<=t.width+1),label+' overlapping tab labels');await page.screenshot({path:output+'/'+label+'-'+width+'.png',fullPage:true});assert.ok(overflow.scroll<=width+1,label+' overflow '+JSON.stringify(overflow));screens.push({page:label,width,overflow:false});}
+try{
+ start('api',['apps/api/src/server.ts']);start('worker',['apps/worker/index.ts']);start('web',['apps/web/node_modules/next/dist/bin/next','start','apps/web','--port','3000','--hostname','127.0.0.1']);await ready('http://127.0.0.1:4000/api/health');await ready(origin+'/login');
+ browser=await chromium.launch(process.env.PLAYWRIGHT_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH,args:['--no-sandbox','--disable-dev-shm-usage']}:{});
+ const ctx=await browser.newContext({baseURL:origin});const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));
+ for(const width of [360,390,768,1024,1440]){await page.setViewportSize({width,height:900});await page.goto('/');await check(page,'landing',width);await page.goto('/login');await check(page,'login',width);}
+ const login=await ctx.request.post('/api/auth/demo',{headers:{origin}});assert.equal(login.status(),200);const me=await (await ctx.request.get('/api/auth/me')).json();assert.equal(me.tenant.demo,1);
+ const post=async(path,body,method='POST')=>{const r=await ctx.request.fetch('/api'+path,{method,data:body,headers:{origin,'x-csrf-token':me.csrf}});assert.ok(r.ok(),path+': '+await r.text());return r.json();};
+ for(const width of [360,390,768,1024,1440]){await page.setViewportSize({width,height:900});for(const screen of ['overview','monitor','predict','energy','performance','team-operations','integrations','report-schedules','settings','production','work_orders']){await page.goto('/app/'+screen);await check(page,screen,width);}}
+ await page.setViewportSize({width:390,height:900});await page.goto('/app/production');await page.getByRole('button',{name:'Novo registro'}).click();await page.getByRole('dialog').waitFor();await page.screenshot({path:output+'/production-modal-390.png'});await page.keyboard.press('Escape');await assert.equal(await page.getByRole('dialog').count(),0);
+ await page.getByRole('button',{name:'Abrir menu',exact:true}).click();await page.keyboard.press('Escape');assert.equal(await page.locator('.sidebar.open').count(),0);
+ const unit=await post('/data/units',{name:'QA Unidade',address:'Teste isolado'});const barn=await post('/data/barns',{name:'QA Galpão',unit_id:unit.id,capacity:100,birds:80});const eq=await post('/data/equipment',{name:'QA Motor',barn_id:barn.id,category:'Motor'});
+ const email='qa-operator@example.invalid';const op=await post('/users',{name:'QA Operador',email,password,role:'OPERATOR'});await post('/staff/assignments/'+op.id,{barn_ids:[barn.id],preferred:barn.id},'PUT');const staff=await (await ctx.request.get('/api/staff')).json();await post('/population',{barn_id:barn.id,day:staff.today,birds:80});
+ const pdf=await ctx.request.get('/api/report.pdf');assert.equal(pdf.status(),200,'PDF: '+(pdf.status()===200?'ok':await pdf.text()));writeFileSync(output+'/executive-report.pdf',await pdf.body());await ctx.close();
+ const operator=await browser.newContext({baseURL:origin});const mobile=await operator.newPage();mobile.on('pageerror',e=>errors.push(e.message));await mobile.goto('/login');await mobile.getByLabel('E-mail',{exact:true}).fill(email);await mobile.getByLabel('Senha',{exact:true}).fill(password);await mobile.getByRole('button',{name:'Entrar na plataforma'}).click();await mobile.waitForURL('**/app/staff');
+ for(const width of [360,390,768,1024,1440]){await mobile.setViewportSize({width,height:900});await mobile.getByLabel('Quantidade de ovos').fill('70');await mobile.getByRole('button',{name:'Salvar produção'}).click();await mobile.getByRole('status').filter({hasText:'Produção registrada'}).waitFor();await check(mobile,'staff',width);}
+ await mobile.getByRole('button',{name:'Comunicar problema'}).click();await mobile.getByRole('combobox',{name:/^Equipamento/}).selectOption(eq.id);await mobile.getByLabel('Conte em poucas palavras').fill('Ruído durante inspeção de teste');await mobile.getByRole('button',{name:'Registrar ocorrência',exact:true}).click();await mobile.getByRole('status').filter({hasText:'Ocorrência registrada'}).waitFor();assert.equal(await mobile.evaluate(async()=> (await fetch('/api/data/costs')).status),403);
+ await operator.close();
+ const admin=await browser.newContext({baseURL:origin});const portal=await admin.newPage();portal.on('pageerror',e=>errors.push(e.message));await portal.goto('/login');await portal.getByLabel('E-mail',{exact:true}).fill('qa-ews@example.invalid');await portal.getByLabel('Senha',{exact:true}).fill(password);const code=portal.locator('input[name="code"]');if(await code.count())await code.fill(totp(secret,Math.floor(Date.now()/30000)));else await portal.getByLabel(/Código/).fill(totp(secret,Math.floor(Date.now()/30000)));await portal.getByRole('button',{name:'Entrar na plataforma'}).click();await portal.waitForURL('**/app/platform');
+ for(const width of [360,390,768,1024,1440]){await portal.setViewportSize({width,height:900});await check(portal,'admin',width);}
+ await portal.getByRole('tab',{name:'Saúde operacional'}).click();await portal.getByText('Último ciclo:',{exact:false}).waitFor();await portal.setViewportSize({width:390,height:900});await check(portal,'worker-health',390);
+ await portal.getByRole('tab',{name:'Recorrências',exact:true}).click();await portal.getByRole('button',{name:'Nova recorrência'}).click();await portal.getByRole('dialog').waitFor();await portal.screenshot({path:output+'/recurring-modal.png'});
+ assert.deepEqual(errors,[]);const result={browser:browser.version(),screenshots:screens.length,checks:screens,flows:['MFA EWS','owner demo','operator login','production retry','incident','operator denied finance','modal Escape','mobile drawer Escape','worker health','PDF'],errors};writeFileSync(output+'/results.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+}finally{if(browser)await browser.close();for(const p of children)p.kill('SIGTERM');await Promise.all(children.map(p=>new Promise(resolve=>{if(p.exitCode!==null)return resolve();p.once('exit',resolve);setTimeout(()=>{p.kill('SIGKILL');resolve();},5000).unref();})));await db.close();}

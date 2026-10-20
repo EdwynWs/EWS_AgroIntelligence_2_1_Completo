@@ -1,0 +1,11 @@
+'use client';
+import {useEffect,useRef,useId} from 'react';
+import {X,ArrowUpRight,Inbox,RotateCw} from 'lucide-react';
+import {labels} from '../lib/client';
+export function Badge({value}:{value:string}){return <span className={'badge '+value}><i/>{labels[value]||value}</span>;}
+export function Metric({label,value,unit,detail,icon:Icon,tone='blue'}:any){return <div className="metric"><div className="metric-top"><span>{label}</span><div className={'metric-icon '+tone}><Icon size={18}/></div></div><div className="metric-value">{value}<small>{unit}</small></div><div className="metric-detail">{detail||'Sem registros no período'}</div></div>;}
+export function Empty({title='Nenhum registro por aqui',text='Adicione o primeiro registro para começar a acompanhar sua operação.',action}:any){return <div className="empty"><div className="empty-icon"><Inbox size={28}/></div><h3>{title}</h3><p>{text}</p>{action}</div>;}
+export function Loading(){return <div className="loading" aria-label="Carregando" role="status"><div className="skeleton title-skeleton"/><div className="metrics">{[1,2,3,4].map(i=><div key={i} className="skeleton metric-skeleton"/>)}</div><div className="skeleton chart-skeleton"/></div>;}
+export function ErrorBox({message,onRetry}:any){return <div className="error-box" role="alert"><strong>Não foi possível concluir</strong><p>{message}</p>{onRetry&&<button className="button secondary" onClick={onRetry}><RotateCw size={15}/>Tentar novamente</button>}</div>;}
+export function Modal({title,children,onClose}:any){const titleId=useId();const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{ref.current?.showModal();const dialog=ref.current;return()=>dialog?.close();},[]);return <dialog aria-labelledby={titleId} className="modal" ref={ref} onCancel={onClose} onClick={e=>{if(e.target===e.currentTarget)onClose();}}><div className="modal-head"><h2 id={titleId}>{title}</h2><button aria-label="Fechar" className="icon-button" onClick={onClose}><X size={20}/></button></div>{children}</dialog>;}
+export function Section({title,description,action,children}:any){return <section className="panel"><div className="panel-header"><div><h2>{title}</h2>{description&&<p>{description}</p>}</div>{action}</div>{children}</section>;}

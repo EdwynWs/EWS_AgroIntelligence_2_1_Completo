@@ -1,0 +1,22 @@
+name: ews-agro-test
+services:
+  db-test:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: agro_test
+      POSTGRES_USER: agro_test
+      POSTGRES_PASSWORD: local_test_only
+    tmpfs: ["/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agro_test -d agro_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+  tests:
+    build: {context: ., dockerfile: infrastructure/docker/Dockerfile, target: test}
+    environment:
+      NODE_ENV: test
+      TEST_DB_DRIVER: postgres
+      DATABASE_URL: postgresql://agro_test:local_test_only@db-test:5432/agro_test
+    depends_on:
+      db-test: {condition: service_healthy}

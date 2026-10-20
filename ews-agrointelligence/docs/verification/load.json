@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-19T22:27:04.104Z",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logical_cpus": 9,
+    "driver": "SQLite in-memory",
+    "transport": "in-process dispatcher; no HTTP/TLS",
+    "concurrency": 1
+  },
+  "ingestion": {
+    "batches": 100,
+    "points": 5000,
+    "total_ms": 720.82,
+    "points_per_second": 6936.5,
+    "latency_per_50_points": {
+      "p50_ms": 5.929,
+      "p95_ms": 17.661,
+      "max_ms": 19.395
+    }
+  },
+  "dashboard": {
+    "requests": 100,
+    "latency": {
+      "p50_ms": 1.644,
+      "p95_ms": 3.82,
+      "max_ms": 16.526
+    }
+  },
+  "peak_process_rss_mib": 121.92,
+  "limitation": "Synthetic local benchmark, not a PostgreSQL/Fastify/VPS capacity certification."
+}
